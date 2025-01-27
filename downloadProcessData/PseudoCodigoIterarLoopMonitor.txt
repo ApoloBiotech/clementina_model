@@ -4,76 +4,70 @@
     Cada 10 minutos, se lanza un job de alineamiento solo para archivos descargados completamente (identificados por el prefijo SAM).
     Se asegura la ejecución en paralelo de descargas y alineamientos.
 
-
 # Configuración inicial
-Definir carpeta_base para datos
-Definir carpeta_descargas para almacenamiento temporal
-Definir carpeta_resultados para alineamientos
-Definir lista_de_muestras con identificadores de muestras a procesar
-Definir intervalo_tiempo = 10 minutos  # Tiempo entre verificaciones para lanzar alineamientos
+1. Definir archivo de entrada con nombres de ejecución (run) y muestras (sample).
+2. Establecer directorios para almacenar:
+   - Archivos FASTQ temporales.
+   - Registros (logs).
+   - Resultados del alineamiento.
+3. Establecer el número máximo de reintentos para la descarga.
+4. Configurar el intervalo para verificar descargas y lanzar alineamientos (e.g., cada 10 minutos).
 
-# Función: Descargar archivo con reintentos
-Def descargar_archivo(muestra):
-    intento = 0
-    éxito = Falso
+# Proceso principal
+Mientras haya líneas en el archivo de entrada:
+   Leer `run_name` y `sample_name` desde el archivo.
 
-    Mientras intento < 3 y éxito == Falso:
-        Descargar archivo desde NCBI o repositorio público
-        Verificar integridad del archivo descargado (checksum, tamaño esperado)
+   # Descargar archivos FASTQ
+   Inicializar `attempt = 0` y `success = 0`.
 
-        Si la verificación es exitosa:
-            Renombrar archivo para incluir prefijo 'SAM'
-            éxito = Verdadero
-        Fin Si
+   Mientras `attempt < MAX_RETRIES`:
+      Intentar descargar con `fastq-dump` usando el comando:
+      ```bash
+      fastq-dump --split-3 --outdir FASTQ_DIR run_name
+      ```
+      Si la descarga es exitosa:
+         Establecer `success = 1` y salir del bucle.
+      Si falla:
+         Incrementar `attempt`.
+         Mostrar mensaje de error y reintentar.
 
-        intento += 1
-    Fin Mientras
+   Si todos los intentos fallan:
+      Intentar descargar con `prefetch`.
+      Si `prefetch` tiene éxito:
+         Reintentar `fastq-dump`.
+      Si también falla:
+         Registrar el error y continuar con la siguiente muestra.
 
-    Si éxito == Falso:
-        Registrar mensaje en log ("Error: No se pudo descargar la muestra {muestra}")
-    Fin Si
+   # Renombrar archivos descargados
+   Para cada archivo FASTQ descargado:
+      - Verificar existencia de los archivos `_1.fastq`, `_2.fastq` o `.fastq`.
+      - Renombrar con el prefijo `sample_name`.
 
-    Retornar éxito
-Fin Def
+   Marcar archivos completados con el prefijo **SAM**.
 
-# Función: Procesar archivo con Kallisto
-Def procesar_archivo(muestra):
-    archivo = buscar_archivo_en_carpeta(carpeta_descargas, muestra, prefijo='SAM')
+   Registrar la finalización de la descarga en el log.
 
-    Si archivo_existe(archivo):
-        Ejecutar Kallisto con archivo
-        Mover resultados generados a carpeta_resultados
-        Si resultados_generados_correctamente(muestra):
-            Registrar mensaje en log ("Procesamiento exitoso para la muestra {muestra}")
-        Si no:
-            Registrar mensaje en log ("Error: Fallo el procesamiento de la muestra {muestra}")
-        Fin Si
-    Fin Si
-Fin Def
+# Lanzar jobs de alineamiento
+Cada 10 minutos:
+   Identificar archivos con el prefijo **SAM** en el directorio.
+   Para cada archivo identificado:
+      - Verificar que no esté siendo procesado actualmente.
+      - Iniciar el proceso de alineamiento:
+        ```bash
+        kallisto quant -i index_file -o output_dir -t NUM_THREADS -b bootstrap_samples input_fastq
+        ```
+      - Registrar la ejecución en el log.
 
-# Función: Bucle para lanzar alineamientos
-Def lanzar_jobs_de_procesamiento():
-    Mientras True:
-        Para cada muestra en lista_de_muestras:
-            archivo = buscar_archivo_en_carpeta(carpeta_descargas, muestra, prefijo='SAM')
-            Si archivo_existe(archivo):
-                Si no_job_activo(muestra):  # Asegura que no se procese la misma muestra simultáneamente
-                    procesar_archivo(muestra)
-                Fin Si
-            Fin Si
-        Fin Para
+# Monitoreo
+   Implementar scripts que:
+      - Detecten archivos incompletos y los excluyan.
+      - Reintenten descargas fallidas (hasta el máximo configurado).
+      - Supervisen los logs para detectar fallas en tiempo real.
 
-        Esperar(intervalo_tiempo)  # Esperar 10 minutos antes de la siguiente ejecución
-    Fin Mientras
-Fin Def
+# Finalización
+   Una vez que todas las descargas y alineamientos estén completos:
+      - Limpiar directorios temporales.
+      - Generar un resumen de errores, tiempos y resultados.
 
-# Flujo principal
-Paralelizar tareas:
-    1. Descarga de archivos:
-        Para cada muestra en lista_de_muestras:
-            Descargar archivo en carpeta_descargas usando descargar_archivo(muestra)
-        Fin Para
 
-    2. Alineamiento periódico:
-        Ejecutar lanzar_jobs_de_procesamiento()
 
