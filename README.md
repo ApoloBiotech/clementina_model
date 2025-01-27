@@ -30,13 +30,13 @@ repeat_loop_kallisto_mappingOlder_v2.sh
     Se asegura la ejecución en paralelo de descargas y alineamientos.
 
 # Configuración inicial
-1. Definir archivo de entrada con nombres de ejecución (run) y muestras (sample).
-2. Establecer directorios para almacenar:
-   - Archivos FASTQ temporales.
+1. Definir archivo y nombres de ejecución (run) y muestras (sample).
+2. Establecer dirs para guardar:
+   - Archivos FASTQ 
    - Registros (logs).
-   - Resultados del alineamiento.
-3. Establecer el número máximo de reintentos para la descarga.
-4. Configurar el intervalo para verificar descargas y lanzar alineamientos (e.g., cada 10 minutos).
+   - Resultados del alineamiento Kallisto.
+3. Establecer el número máximo de reintentos para la descarga. (son 3 ahora)
+4. Configurar el intervalo para verificar descargas y lanzar alineamientos a cola SLURM (e.g., cada 10 minutos).
 
 # Proceso principal
 Mientras haya líneas en el archivo de entrada:
