@@ -1,0 +1,79 @@
+### Pseudocódigo  Descarga y Procesamiento Concurrente
+
+    Se intentan descargas con hasta 3 intentos por archivo.
+    Cada 10 minutos, se lanza un job de alineamiento solo para archivos descargados completamente (identificados por el prefijo SAM).
+    Se asegura la ejecución en paralelo de descargas y alineamientos.
+
+
+# Configuración inicial
+Definir carpeta_base para datos
+Definir carpeta_descargas para almacenamiento temporal
+Definir carpeta_resultados para alineamientos
+Definir lista_de_muestras con identificadores de muestras a procesar
+Definir intervalo_tiempo = 10 minutos  # Tiempo entre verificaciones para lanzar alineamientos
+
+# Función: Descargar archivo con reintentos
+Def descargar_archivo(muestra):
+    intento = 0
+    éxito = Falso
+
+    Mientras intento < 3 y éxito == Falso:
+        Descargar archivo desde NCBI o repositorio público
+        Verificar integridad del archivo descargado (checksum, tamaño esperado)
+
+        Si la verificación es exitosa:
+            Renombrar archivo para incluir prefijo 'SAM'
+            éxito = Verdadero
+        Fin Si
+
+        intento += 1
+    Fin Mientras
+
+    Si éxito == Falso:
+        Registrar mensaje en log ("Error: No se pudo descargar la muestra {muestra}")
+    Fin Si
+
+    Retornar éxito
+Fin Def
+
+# Función: Procesar archivo con Kallisto
+Def procesar_archivo(muestra):
+    archivo = buscar_archivo_en_carpeta(carpeta_descargas, muestra, prefijo='SAM')
+
+    Si archivo_existe(archivo):
+        Ejecutar Kallisto con archivo
+        Mover resultados generados a carpeta_resultados
+        Si resultados_generados_correctamente(muestra):
+            Registrar mensaje en log ("Procesamiento exitoso para la muestra {muestra}")
+        Si no:
+            Registrar mensaje en log ("Error: Fallo el procesamiento de la muestra {muestra}")
+        Fin Si
+    Fin Si
+Fin Def
+
+# Función: Bucle para lanzar alineamientos
+Def lanzar_jobs_de_procesamiento():
+    Mientras True:
+        Para cada muestra en lista_de_muestras:
+            archivo = buscar_archivo_en_carpeta(carpeta_descargas, muestra, prefijo='SAM')
+            Si archivo_existe(archivo):
+                Si no_job_activo(muestra):  # Asegura que no se procese la misma muestra simultáneamente
+                    procesar_archivo(muestra)
+                Fin Si
+            Fin Si
+        Fin Para
+
+        Esperar(intervalo_tiempo)  # Esperar 10 minutos antes de la siguiente ejecución
+    Fin Mientras
+Fin Def
+
+# Flujo principal
+Paralelizar tareas:
+    1. Descarga de archivos:
+        Para cada muestra en lista_de_muestras:
+            Descargar archivo en carpeta_descargas usando descargar_archivo(muestra)
+        Fin Para
+
+    2. Alineamiento periódico:
+        Ejecutar lanzar_jobs_de_procesamiento()
+
