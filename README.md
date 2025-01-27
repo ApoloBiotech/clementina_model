@@ -14,7 +14,7 @@ Implementar modelos avanzados de aprendizaje automático, incluyendo redes neuro
 
 
 
-# Monitoreo
+# Monitoreo, ver: 
 
 ### Scripts con scheduler (one repeats and loops checking jobs , other mapping scripts send jobs when needed automaticaly):
 ## in DownloadProcessData folder:
@@ -129,6 +129,8 @@ downloadFastq_part04.sh
 ## In Modeling folder:
 
 model_4.py       (runs random forest and gradient boost code)
+
+
 
 
 
