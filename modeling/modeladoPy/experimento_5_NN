@@ -1,0 +1,59 @@
+1. Import necessary libraries
+   - pandas, numpy
+   - scikit-learn for train-test split and metrics
+   - tensorflow/keras for neural network models
+   - combat.pycombat for batch correction
+   - matplotlib for visualizations
+
+2. Load Data
+   - venancio = Load expression data (e.g., in Parquet or CSV format)
+   - annot = Load metadata with stress categories, tissues, and bioprojects
+
+3. Preprocessing
+   3.1 Filter samples
+       - Remove samples with insufficient bioproject representation
+       - Keep only high-variance genes (variance > threshold)
+   3.2 Align data
+       - Match `venancio` and `annot` rows to ensure consistency
+
+4. Batch Effect Correction
+   - Perform batch correction using ComBat
+     - combat_corrected = pycombat(expression_data, annot['bioproject'])
+
+5. Split Data
+   - X = combat_corrected (gene expression values)
+   - y = annot['estres'] (stress categories as labels)
+   - Split into training and test sets (e.g., 80% train, 20% test)
+
+6. Build Neural Network Model
+   - Define model architecture
+     - Input layer: Number of genes
+     - Hidden layers: Dense layers with ReLU activation
+     - Output layer: Number of stress categories with softmax activation
+   - Compile model
+     - Loss: Categorical Crossentropy
+     - Optimizer: Adam
+     - Metrics: Accuracy
+
+7. Train Neural Network
+   - Fit model on training data (X_train, y_train)
+   - Use validation split (e.g., 20% of training data for validation)
+   - Save the model for future use
+
+8. Evaluate Model
+   - Evaluate performance on test data (X_test, y_test)
+     - Metrics: Accuracy, F1-score
+   - Generate confusion matrix and classification report
+
+9. Visualize Results
+   - Plot training/validation loss and accuracy
+   - Visualize confusion matrix
+
+10. Save Outputs
+   - Save trained model to file
+   - Save classification metrics and plots
+
+11. Feature Importance (optional)
+   - Use integrated gradients or SHAP for feature importance
+   - Visualize the top contributing genes
+
