@@ -1,7 +1,7 @@
 # clementina_model
 Biomarker discovery and Prediction
 
-# Título del Proyecto: Desarrollo de biomarcadores y modelos predictores asociados a distintos estreses en cultivos de interés agronómico utilizando RNAseqs públicos
+# Título del Proyecto: Desarrollo de biomarcadores y modelos predictivos asociados a distintos estreses en cultivos de interés agronómico utilizando RNAseqs públicos
 
 Procesar y analizar metadatos de muestras de RNAseq públicos en soja y tomate, enfocándose en la cuantificación precisa de la expresión génica para asociar estas muestras con distintos tipos de estrés (abiótico y biótico) y tejidos específicos.
 
