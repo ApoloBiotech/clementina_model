@@ -79,9 +79,9 @@ Cada 10 minutos:
       - Verificar que no esté siendo procesado actualmente.
       - Iniciar el proceso de alineamiento:
         ```bash
-        kallisto quant -i index_file -o output_dir -t NUM_THREADS -b bootstrap_samples input_fastq
+        kallisto quant -i index_file -o output_dir -t NUM_THREADS input_fastq
         ```
-      - Registrar la ejecución en el log.
+    Registrar la ejecución en el log.
 
 # Monitoreo
    Implementar scripts que:
@@ -91,7 +91,7 @@ Cada 10 minutos:
 
 # Finalización
    Una vez que todas las descargas y alineamientos estén completos:
-      - Limpiar directorios temporales.
+      - Limpiar directorios temporales (fastq y sra files).
       - Generar un resumen de errores, tiempos y resultados.
 
 
