@@ -14,7 +14,7 @@ Implementar modelos avanzados de aprendizaje automático, incluyendo redes neuro
 
 
 
-# Monitoreo, ver: 
+# Monitoreo, usado en Serafin CCAD https://wiki.ccad.unc.edu.ar/ :
 
 ### Scripts con scheduler (one repeats and loops checking jobs , other mapping scripts send jobs when needed automaticaly):
 ## in DownloadProcessData folder:
