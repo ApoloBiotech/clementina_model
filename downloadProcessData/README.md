@@ -1,3 +1,4 @@
+# Info 
 ### Pseudocódigo  Descarga y Procesamiento Concurrente
 
     Se intentan descargas con hasta 3 intentos por archivo.
@@ -107,9 +108,6 @@ downloadFastq_part03.sh
 
 downloadFastq_part04.sh
 
-
-### Script to run modeling (script4) needs adjustments
-model_4.py       (runs random forest and gradient boost code)
 
 
 
