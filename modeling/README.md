@@ -1,4 +1,11 @@
 # Ver y estimar uso GPU, tensorflow funciona con CPU, ver lo de GPU
+Las redes neuronales representan una aproximación fundamentalmente diferente al problema de expresión diferencial. Para nuestro análisis, implementamos una arquitectura feed-forward simple con dos capas ocultas, utilizando activación ReLU y dropout (0.3) para prevenir el sobreajuste e incentivar la exploración de genes. La capa de entrada tiene dimensión (número total de genes) y la de salida utiliza activación softmax para la clasificación multiclase.
+
+Para manejar la alta dimensionalidad (característica de los datos de expresión génica), se intenta añadir una capa de reducción de dimensionalidad antes de la clasificación. Esto comprime las variables de entrada en un espacio latente de menor dimensionalidad.
+
+El entrenamiento se realizó utilizando el optimizador Adam con una tasa de aprendizaje inicial de 1e-4 y programación de tasa de aprendizaje cíclica para evitar mínimos locales. Para abordar el desbalance de clases, implementamos ponderación de clases inversamente proporcional a su frecuencia en los datos de entrenamiento.
+
+
 
 ### Optimizar el uso de la GPU en Python y en el archivo SLURM, :
 
