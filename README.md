@@ -84,10 +84,10 @@ Cada 10 minutos:
     Registrar la ejecución en el log.
 
 # Monitoreo
-   Implementar scripts que:
-      - Detecten archivos incompletos y los excluyan.
-      - Reintenten descargas fallidas (hasta el máximo configurado).
-      - Supervisen los logs para detectar fallas en tiempo real.
+   Scripts que:
+      - Detectan archivos incompletos y los excluyan.
+      - Reintentan descargas fallidas (hasta el máximo configurado).
+      - Supervisan los logs para detectar fallas en tiempo real.
 
 # Finalización
    Una vez que todas las descargas y alineamientos estén completos:
@@ -129,7 +129,7 @@ downloadFastq_part04.sh
 ## In Modeling folder:
 
 model_4.py       (runs random forest and gradient boost code)
-
+model_6.py       (run Neural Networks Tensor-flow ScikitLearn code)
 
 
 
